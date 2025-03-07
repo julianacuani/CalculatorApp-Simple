@@ -2,7 +2,11 @@ package com.calculatorapp.mycalculator.ui.components
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -21,6 +25,8 @@ fun CalculatorScreen(viewModel: MyCalculatorViewModel = viewModel()) {
     val expression by viewModel.expression.collectAsState()
     val result by viewModel.result.collectAsState()
     val history by viewModel.history.collectAsState()
+
+    var isHistoryVisible by remember { mutableStateOf(false) }
 
     Column {
         Column(
@@ -41,8 +47,6 @@ fun CalculatorScreen(viewModel: MyCalculatorViewModel = viewModel()) {
                 fontWeight = FontWeight.Bold
             )
 
-
-            // Botões da calculadora
             val buttonLabels = listOf(
                 listOf("7", "8", "9", "/"),
                 listOf("4", "5", "6", "*"),
@@ -68,17 +72,31 @@ fun CalculatorScreen(viewModel: MyCalculatorViewModel = viewModel()) {
             }
         }
 
-        Column(
+        Row(
             modifier = Modifier
                 .padding(16.dp)
-                .fillMaxWidth()
+                .clickable { isHistoryVisible = !isHistoryVisible },
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "History:",
+                text = "History",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = Color.Red
             )
+            Icon(
+                imageVector = if (isHistoryVisible) {
+                    Icons.Default.KeyboardArrowUp
+                } else {
+                    Icons.Default.KeyboardArrowDown
+                },
+                contentDescription = "Toggle History",
+                tint = Color.Red
+            )
+        }
+
+        // Exibir o histórico se estiver visível
+        if (isHistoryVisible) {
             Text(
                 text = history,
                 style = MaterialTheme.typography.bodyMedium,
@@ -87,7 +105,6 @@ fun CalculatorScreen(viewModel: MyCalculatorViewModel = viewModel()) {
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
